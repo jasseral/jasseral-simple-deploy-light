@@ -9,3 +9,5 @@ README.md
             echo "ENVIRONMENT=$(deploy/target_environment.rb)" >> $SHELL_CONFIG
             sed -i "/- hosts:/a\  no_log: yes" ansible/playbooks/site.yml
             echo -e $ANSIBLE_VAULT_PASSWORD > ansible/.vault_pass.txt && unset ANSIBLE_VAULT_PASSWORD
+
+add
