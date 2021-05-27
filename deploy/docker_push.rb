@@ -10,7 +10,7 @@ def push_image
   cmd("docker push #{container_repository}:#{GIT_BRANCH}") if environment == 'dev' && GIT_BRANCH != 'main'
   cmd("docker push #{container_repository}:#{GIT_TAG}") if %w[uat production].include? environment
 end
-
+jasseralg/skibutlers.com-admin-light:dev
 def environment
   ENV['environment']
 end
