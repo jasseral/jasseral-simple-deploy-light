@@ -9,12 +9,12 @@ GIT_TAG = `git describe --tags 2> /dev/null`.strip
 
 CONTAINER_REGISTRY_NAME = {
   dev: 'jasseralg',
-  uat: 'CraftCaeUAT'
+  uat: 'jasseralgUAT'
 }.freeze
 
 def container_registry
   # Here we add the registry , I need to improve this for be generic  
-  'jasseralg'
+  "#{CONTAINER_REGISTRY_NAME[environment.to_sym]}".downcase
 end
 
 def container_repository
