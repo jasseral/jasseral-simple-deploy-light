@@ -101,7 +101,7 @@ commands:
       - run:
           name: Log into the container registry
           #command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t acr
-          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t acr
+          command: echo ansible-playbook playbooks/${ENVIRONMENT}.yml -t acr
           working_directory: ansible
       # - run:
       #     name: Set the environment variables
