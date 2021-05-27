@@ -7,10 +7,10 @@
     - community.kubernetes
 
   roles:
-    - role: az_acr
-    - role: container_image
-    - role: env_vars
-    - role: migrations
-    - role: job_scheduler
-    - role: web_server
-    - role: ingress
+    - role: container_login   #Working on this 
+    #- role: container_image
+    #- role: env_vars
+    #- role: migrations
+    #- role: job_scheduler
+    #- role: web_server
+    #- role: ingress

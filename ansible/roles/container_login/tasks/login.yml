@@ -1,0 +1,7 @@
+---
+- name: Log into the Container Registry
+  changed_when: true
+  command:
+    cmd: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #cmd: "az acr login --name {{ container_registry.server.split('.')[0] }}"
+
