@@ -2,5 +2,5 @@
 - name: Build the container image
   changed_when: true
   command:
-    cmd: "deploy/docker_build.rb -e {{ env }}"
+    cmd: "deploy/docker_build.rb -e dev"
     chdir: "../.."
