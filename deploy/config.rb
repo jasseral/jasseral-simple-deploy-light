@@ -14,7 +14,7 @@ CONTAINER_REGISTRY_NAME = {
 
 def container_registry
   # Here we add the registry , I need to improve this for be generic  
-  "#{CONTAINER_REGISTRY_NAME[environment.to_sym]}".downcase
+  'jasseralg'
 end
 
 def container_repository
