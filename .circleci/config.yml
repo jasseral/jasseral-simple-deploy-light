@@ -99,10 +99,7 @@ commands:
             apk add --no-cache --no-progress docker-cli
             pip install docker
       - ansible-configuration
-      - run:
-          name: Log into the container registry
-          command: ansible-playbook playbooks/${ENVIRONMENT}.yml --connection=local -t container_login 
-          working_directory: ansible
+      
       # - run:
       #     name: Set the environment variables
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t env-vars
@@ -112,6 +109,10 @@ commands:
           command: | 
             chmod +x deploy/docker_build.rb
             deploy/docker_build.rb -e $ENVIRONMENT
+      - run:
+          name: Log into the container registry
+          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t container_login 
+          working_directory: ansible
       - run:
           name: Upload the container images
           command: |
