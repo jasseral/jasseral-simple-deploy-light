@@ -110,6 +110,7 @@ commands:
       - run:
           name: Build the container images
           command: | 
+            chmod 755 deploy/docker_build.rb
             deploy/docker_build.rb -e $ENVIRONMENT
             docker images 
       # - run:
