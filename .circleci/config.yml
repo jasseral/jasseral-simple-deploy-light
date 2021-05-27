@@ -103,26 +103,22 @@ commands:
           name: Log into the container registry
           command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t container_login
           working_directory: ansible
-      - run:
-          name: Build the container images
-          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t docker-build
-          working_directory: ansible
       # - run:
       #     name: Set the environment variables
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t env-vars
       #     working_directory: ansible
-      # - run:
-      #     name: Build the container images
-      #     command: | 
-      #       chmod +x deploy/docker_build.rb
-      #       deploy/docker_build.rb -e $ENVIRONMENT
-      #       docker images 
-      # - run:
-      #     name: Upload the container images
-      #     command: |
-      #       echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-      #       chmod +x deploy/docker_push.rb 
-      #       deploy/docker_push.rb -e $ENVIRONMENT
+      - run:
+          name: Build the container images
+          command: | 
+            chmod +x deploy/docker_build.rb
+            deploy/docker_build.rb -e $ENVIRONMENT
+      - run:
+          name: Upload the container images
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            chmod +x deploy/docker_push.rb 
+            deploy/docker_push.rb -e $ENVIRONMENT
+            
       # - deploy:
       #     name: "Deploy: Run Ansible"
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml
