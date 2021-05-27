@@ -115,10 +115,9 @@ commands:
       - run:
           name: Upload the container images
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             chmod +x deploy/docker_push.rb 
             deploy/docker_push.rb -e $ENVIRONMENT
-            
+
       # - deploy:
       #     name: "Deploy: Run Ansible"
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml
