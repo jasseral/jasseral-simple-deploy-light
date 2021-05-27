@@ -8,7 +8,7 @@
 
   roles:
     - role: container_login   #Working on this 
-    #- role: container_image
+    - role: container_image
     #- role: env_vars
     #- role: migrations
     #- role: job_scheduler

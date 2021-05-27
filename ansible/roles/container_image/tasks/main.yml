@@ -1,0 +1,5 @@
+---
+- import_tasks: build.yml
+  tags:
+    - docker-image
+    - docker-build
