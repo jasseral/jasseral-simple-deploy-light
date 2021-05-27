@@ -94,6 +94,11 @@ commands:
           docker_layer_caching: true
       - checkout
       - ansible-base-dependencies
+      - run:
+          name: Install additional dependencies
+          command: |
+            apk add --no-cache --no-progress docker-cli
+            pip install docker
       - ansible-configuration
       - run:
           name: Log into the container registry
