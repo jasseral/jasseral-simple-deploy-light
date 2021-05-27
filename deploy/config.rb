@@ -8,15 +8,13 @@ GIT_COMMIT_SHA = `git rev-parse --verify HEAD 2> /dev/null`.strip
 GIT_TAG = `git describe --tags 2> /dev/null`.strip
 
 CONTAINER_REGISTRY_NAME = {
-  #dev: 'CraftCaeDev',
-  dev: 'jasseralg',
+  dev: 'CraftCaeDev',
   uat: 'CraftCaeUAT'
 }.freeze
 
 def container_registry
   # Here we add the registry , I need to improve this for be generic  
-  # "#{CONTAINER_REGISTRY_NAME[environment.to_sym]}.azurecr.io".downcase
-  "#{CONTAINER_REGISTRY_NAME}".downcase
+  "#{CONTAINER_REGISTRY_NAME[environment.to_sym]}.azurecr.io".downcase
 end
 
 def container_repository
