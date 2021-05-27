@@ -20,8 +20,8 @@ executors:
     shell: /bin/sh -leo pipefail
     docker:
       - image: mcr.microsoft.com/azure-cli:2.22.1
-        environment:
-          AZURE_TENANT_ID: << pipeline.parameters.azure_tenant_id >>
+        # environment:
+        #   AZURE_TENANT_ID: << pipeline.parameters.azure_tenant_id >>
 
 commands:
   node-base:
