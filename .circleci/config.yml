@@ -107,9 +107,11 @@ commands:
       #     name: Set the environment variables
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t env-vars
       #     working_directory: ansible
-      # - run:
-      #     name: Build the container images
-      #     command: deploy/docker_build.rb -e $ENVIRONMENT
+      - run:
+          name: Build the container images
+          command: | 
+            deploy/docker_build.rb -e $ENVIRONMENT
+            docker images 
       # - run:
       #     name: Upload the container images
       #     command: deploy/docker_push.rb -e $ENVIRONMENT
