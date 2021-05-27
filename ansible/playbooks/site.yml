@@ -1,0 +1,16 @@
+---
+- hosts: "{{ target }}" #This target come from the target obtained from tag target in the playbooks 
+  gather_facts: false
+  connection: local
+
+  collections:
+    - community.kubernetes
+
+  roles:
+    - role: az_acr
+    - role: container_image
+    - role: env_vars
+    - role: migrations
+    - role: job_scheduler
+    - role: web_server
+    - role: ingress
