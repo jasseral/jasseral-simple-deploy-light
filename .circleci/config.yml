@@ -101,7 +101,7 @@ commands:
       - ansible-configuration
       - run:
           name: Log into the container registry
-          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -vvv -t container_login
+          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t container_login
           working_directory: ansible
 
       # - run:

@@ -1,5 +1,7 @@
 ---
 - name: Log into the Container Registry
+  hosts: 127.0.0.1
+  connection: local
   changed_when: true
   command:
     cmd: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
