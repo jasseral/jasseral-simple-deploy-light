@@ -1,0 +1,140 @@
+---
+version: 2.1
+
+parameters:
+  node-version:
+    type: string
+    default: 12.20.0
+  yarn-cache-dir:
+    type: string
+    default: /root/.cache/yarn
+
+executors:
+  docker-node:
+    docker:
+      - image: node:<< pipeline.parameters.node-version >>-alpine
+    shell: /bin/sh -leo pipefail
+    environment:
+      YARN_CACHE_FOLDER: << pipeline.parameters.yarn-cache-dir >>
+  docker-ansible:
+    shell: /bin/sh -leo pipefail
+    docker:
+      - image: mcr.microsoft.com/azure-cli:2.22.1
+        environment:
+          AZURE_TENANT_ID: << pipeline.parameters.azure_tenant_id >>
+
+commands:
+  node-base:
+    description: General Node.js modules install and tests
+    steps:
+      - run:
+          name: Install CI dependencies
+          command: apk add --no-cache git openssh-client
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v1-yarn-{{ .Branch }}
+      - run:
+          name: Install Node.js modules
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          key: v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - << pipeline.parameters.yarn-cache-dir >>
+      - run:
+          name: Run lint
+          command: yarn run lint
+      - run:
+          name: Run tests
+          command: yarn run test
+      - run:
+          name: Run build
+          command: yarn build
+      - run:
+          name: Make sure repository is clean
+          command: |
+            check="$(git status --porcelain)"
+            if [ -n "${check}" ]; then
+              echo "${check}"
+              git diff
+              false
+            fi
+      - store_test_results:
+          path: test-results
+  ansible-base-dependencies:
+    steps:
+      - run:
+          name: Install base dependencies
+          command: |
+            apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
+            apk add --no-cache --no-progress ansible bash ruby
+            pip install --progress-bar=ascii --user --upgrade pip kubernetes~=11.0 openshift~=0.11.0
+  ansible-configuration:
+    steps:
+      - run:
+          name: Set additional configuration
+          command: |
+            SHELL_CONFIG=/etc/profile
+            echo "ENVIRONMENT=$(deploy/target_environment.rb)" >> $SHELL_CONFIG
+            sed -i "/- hosts:/a\  no_log: yes" ansible/playbooks/site.yml
+      - run:
+          name: Install Galaxies
+          command: ansible-galaxy collection install -r requirements.yml
+          working_directory: ansible
+
+
+  deploy-base:
+    description: Generic deployment steps
+    steps:
+      - setup_remote_docker:
+          version: 20.10.2
+          docker_layer_caching: true
+      - checkout
+      - ansible-base-dependencies
+      - run:
+          name: Install additional dependencies
+          command: |
+            apk add --no-cache --no-progress docker-cli
+            pip install docker
+      - ansible-configuration
+      - run:
+          name: Log into the container registry
+          #command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t acr
+          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t acr
+          working_directory: ansible
+      # - run:
+      #     name: Set the environment variables
+      #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t env-vars
+      #     working_directory: ansible
+      # - run:
+      #     name: Build the container images
+      #     command: deploy/docker_build.rb -e $ENVIRONMENT
+      # - run:
+      #     name: Upload the container images
+      #     command: deploy/docker_push.rb -e $ENVIRONMENT
+      # - deploy:
+      #     name: "Deploy: Run Ansible"
+      #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml
+      #     working_directory: ansible
+      # - ansible-cleanup
+
+jobs:
+  deploy-to-dev:
+    executor: docker-ansible
+    steps:
+      - deploy-base
+
+x-tags-filters: &tags-filters
+  filters:  # Required since deploy has filters
+    branches:
+      only: /.*/
+    tags:
+      only: /.*/
+
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+      - deploy-to-dev:
+          <<: *tags-filters
