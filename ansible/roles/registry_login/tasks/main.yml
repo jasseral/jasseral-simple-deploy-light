@@ -1,4 +1,4 @@
 ---
 - import_tasks: login.yml
   tags:
-    - container_login
+    - registry_login

@@ -103,10 +103,10 @@ commands:
           name: Log into the container registry
           command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t container_login
           working_directory: ansible
-      - run:
-          name: Build the container images
-          command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t docker-build
-          working_directory: ansible
+      # - run:
+      #     name: Build the container images
+      #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t docker-build
+      #     working_directory: ansible
       # - run:
       #     name: Set the environment variables
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml -t env-vars
