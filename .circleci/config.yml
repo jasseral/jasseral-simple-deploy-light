@@ -76,7 +76,7 @@ commands:
           name: Set additional configuration
           command: |
             SHELL_CONFIG=/etc/profile
-            chmod 755 deploy/target_environment.rb
+            chmod +x deploy/target_environment.rb
             echo "ENVIRONMENT=$(deploy/target_environment.rb)" >> $SHELL_CONFIG
             sed -i "/- hosts:/a\  no_log: yes" ansible/playbooks/site.yml
       - run:
@@ -110,12 +110,14 @@ commands:
       - run:
           name: Build the container images
           command: | 
-            chmod 755 deploy/docker_build.rb
+            chmod +x deploy/docker_build.rb
             deploy/docker_build.rb -e $ENVIRONMENT
             docker images 
-      # - run:
-      #     name: Upload the container images
-      #     command: deploy/docker_push.rb -e $ENVIRONMENT
+      - run:
+          name: Upload the container images
+          command: |
+            chmod +x deploy/docker_push.rb 
+            deploy/docker_push.rb -e $ENVIRONMENT
       # - deploy:
       #     name: "Deploy: Run Ansible"
       #     command: ansible-playbook playbooks/${ENVIRONMENT}.yml
